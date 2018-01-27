@@ -6,14 +6,10 @@
 
 VFS_NAMESPACE_START
 
-Dat2File::Dat2File(const char *name, Dat2ArchiveRef *zref, unsigned int fileIdx)
-        : File(joinPath(zref->fullname(), name).c_str())
-, _buf(NULL)
-, _pos(0)
-, _archiveHandle(zref)
-, _bufSize(0)
-, _fileIdx(fileIdx)
-, _mode("rb") // binary mode by default
+Dat2File::Dat2File(const char *name, Dat2ArchiveRef *zref)
+    : File(joinPath(zref->fullname(), name).c_str()),
+      _pos(0),
+      _archiveHandle(zref)
 {
 }
 
@@ -24,19 +20,6 @@ Dat2File::~Dat2File()
 
 bool Dat2File::open(const char *mode /* = NULL */)
 {
-    /*
-    _pos = 0;
-    if(!mode)
-        mode = "rb";
-    else if(strchr(mode, 'w') || strchr(mode, 'a'))
-        return false; // writing not yet supported
-    if(_mode != mode)
-    {
-        delete [] _buf;
-        _buf = NULL;
-        _mode = mode;
-    }
-    */
     return true; // does not have to be opened
 }
 
@@ -47,16 +30,12 @@ bool Dat2File::isopen() const
 
 bool Dat2File::iseof() const
 {
-    return _pos >= _bufSize;
+    return _pos >= _unpackedSize;
 }
 
 void Dat2File::close()
 {
-    //flush(); // TODO: write to zip file on close
-
-    delete [] _buf;
-    _buf = NULL;
-    _bufSize = 0;
+    // TODO: delete buffer if file was compressed
 }
 
 bool Dat2File::seek(vfspos pos, int whence)
@@ -77,9 +56,9 @@ bool Dat2File::seek(vfspos pos, int whence)
             break;
 
         case SEEK_END:
-            if(pos >= _bufSize)
+            if(pos >= size())
                 return false;
-            _pos = _bufSize - pos;
+            _pos = size() - pos;
             break;
 
         default:
@@ -103,7 +82,7 @@ vfspos Dat2File::getpos() const
 size_t Dat2File::read(void *dst, size_t bytes)
 {
     File *file = _archiveHandle->archiveFile.content();
-    file->seek(_archiveHandle->dataOffsets.at(_fileIdx), SEEK_SET);
+    file->seek(_dataOffset + _pos, SEEK_SET);
     file->read(dst, bytes);
     _pos += bytes;
     return bytes;
@@ -111,65 +90,56 @@ size_t Dat2File::read(void *dst, size_t bytes)
 
 size_t Dat2File::write(const void *src, size_t bytes)
 {
-    // TODO: implement actually writing to the underlying Zip file.
-    //printf("NYI: ZipFile::write()");
-
     return 0;
 }
-
-#define MZ ((mz_zip_archive*)_archiveHandle->mz)
 
 vfspos Dat2File::size()
 {
-    if(!_archiveHandle->openRead())
+    if (!_archiveHandle->openRead()) {
         return npos;
+    }
 
-    return _archiveHandle->fileSizes.at(_fileIdx);
-/*
-    // FIXME: this is not 100% safe. The file index may change if the zip file is changed externally while closed
-    mz_zip_archive_file_stat zstat;
-    if(!mz_zip_reader_file_stat(MZ, _fileIdx, &zstat))
-        return npos;
-
-    return (vfspos)zstat.m_uncomp_size;
-    */
-    return 0;
+    return _unpackedSize;
 }
 
-bool Dat2File::unpack()
+void Dat2File::setIsCompressed(bool value)
 {
-    return true;
-    /*
-    close(); // delete the buffer
-
-    const vfspos sz = size(); // will reopen the file
-    if(sz == npos)
-        return false;
-
-    _buf = new char[size_t(sz) + 1];
-    if(!_buf)
-        return false;
-
-    if(!mz_zip_reader_extract_to_mem(MZ, _fileIdx, _buf, (size_t)sz, 0))
-    {
-        delete [] _buf;
-        _buf = NULL;
-        return false; // this should not happen
-    }
-
-    _bufSize = sz;
-
-    // In case of text data, make sure the buffer is always terminated with '\0'.
-    // Won't hurt for binary data, so just do it in all cases.
-    _buf[sz] = 0;
-    if(_mode.find("b") == std::string::npos) // text mode?
-    {
-        _bufSize = (vfspos)strnNLcpy(_buf, _buf);
-    }
-
-    return true;
-    */
+    _isCompressed = value;
 }
 
+bool Dat2File::getIsCompressed()
+{
+     return _isCompressed;
+}
+
+void Dat2File::setDataOffset(unsigned int value)
+{
+    _dataOffset = value;
+}
+
+unsigned int Dat2File::getDataOffset()
+{
+    return _dataOffset;
+}
+
+void Dat2File::setPackedSize(unsigned int value)
+{
+    _packedSize = value;
+}
+
+unsigned int Dat2File::getPackedSize()
+{
+    return _packedSize;
+}
+
+void Dat2File::setUnpackedSize(unsigned int value)
+{
+    _unpackedSize = value;
+}
+
+unsigned int Dat2File::getUnpackedSize()
+{
+    return _unpackedSize;
+}
 
 VFS_NAMESPACE_END

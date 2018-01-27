@@ -38,6 +38,13 @@ int main(int argc, char *argv[])
 
     puts(buf);
 
+    vf->seek(6, SEEK_SET);
+    char b[6];
+    vf->read(b, 3);
+    b[5] = 0;
+    puts(b);
+
+
     vf->close();
 
     return 0;

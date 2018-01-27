@@ -9,7 +9,7 @@ VFS_NAMESPACE_START
 class Dat2File : public File
 {
 public:
-    Dat2File(const char *name, Dat2ArchiveRef *zref, unsigned int fileIdx);
+    Dat2File(const char *name, Dat2ArchiveRef *zref);
     virtual ~Dat2File();
     virtual bool open(const char *mode = NULL);
     virtual bool isopen() const;
@@ -23,15 +23,27 @@ public:
     virtual vfspos size();
     virtual const char *getType() const { return "ZipFile"; }
 
-protected:
-    bool unpack();
+    void setIsCompressed(bool value);
+    bool getIsCompressed();
 
-    char *_buf;
+    void setDataOffset(unsigned int value);
+    unsigned int getDataOffset();
+
+    void setPackedSize(unsigned int value);
+    unsigned int getPackedSize();
+
+    void setUnpackedSize(unsigned int value);
+    unsigned int getUnpackedSize();
+
+protected:
     vfspos _pos;
     CountedPtr<Dat2ArchiveRef> _archiveHandle;
-    vfspos _bufSize;
-    unsigned int _fileIdx;
-    std::string _mode;
+
+    bool _isCompressed;
+    unsigned int _dataOffset;
+    unsigned int _packedSize;
+    unsigned int _unpackedSize;
+
 };
 
 VFS_NAMESPACE_END

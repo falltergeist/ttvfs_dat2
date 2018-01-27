@@ -16,11 +16,6 @@ public:
     bool init();
     const char *fullname() const;
 
-    std::vector<int> fileSizes;
-    std::vector<int> dataSizes;
-    std::vector<int> compressed;
-    std::vector<int> dataOffsets;
-
 //protected:
     CountedPtr<File> archiveFile;
 };
