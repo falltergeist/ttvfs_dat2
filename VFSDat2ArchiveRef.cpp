@@ -7,6 +7,34 @@
 
 VFS_NAMESPACE_START
 
+int rread32(File *file)
+{
+    char buffer[4];
+    file->read(&buffer, 4);
+
+    return int((unsigned char)(buffer[3]) << 24 |
+               (unsigned char)(buffer[2]) << 16 |
+               (unsigned char)(buffer[1]) << 8 |
+               (unsigned char)(buffer[0]));
+}
+
+int rread16(File *file)
+{
+    char buffer[2];
+    file->read(&buffer, 2);
+
+    return int((unsigned char)(buffer[1]) << 8 |
+               (unsigned char)(buffer[0]));
+}
+
+int rread8(File *file)
+{
+    char buffer;
+    file->read(&buffer, 1);
+
+    return buffer;
+}
+
 Dat2ArchiveRef::Dat2ArchiveRef(File *file) : archiveFile(file)
 {
     //mz = new mz_zip_archive;
@@ -23,21 +51,15 @@ Dat2ArchiveRef::~Dat2ArchiveRef()
 
 bool Dat2ArchiveRef::init()
 {
-    // Simple check of archive integrity. last 4 bytes should be equal to the size of file
-
     File *file = archiveFile.content();
+
     file->seek(file->size() - 4, SEEK_SET);
-    char buffer[4];
-    file->read(&buffer, 4);
 
-    int a = int((unsigned char)(buffer[3]) << 24 |
-                (unsigned char)(buffer[2]) << 16 |
-                (unsigned char)(buffer[1]) << 8 |
-                (unsigned char)(buffer[0]));
-
-    std::cout << a << std::endl;
-
-    //return zip_reader_init_vfsfile(MZ, archiveFile, 0);
+    // Simple check of archive integrity. last 4 bytes should be equal to the size of file
+    int totalSize = rread32(file);
+    if (totalSize != file->size()) {
+        return false;
+    }
     return true;
 }
 

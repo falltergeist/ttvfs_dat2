@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.9)
+
+include_directories(.)
+
+add_subdirectory(ttvfs)
+
 set(SRC
         ttvfs_dat2.h
         main.cpp

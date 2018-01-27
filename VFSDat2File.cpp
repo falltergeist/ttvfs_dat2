@@ -102,13 +102,9 @@ vfspos Dat2File::getpos() const
 
 size_t Dat2File::read(void *dst, size_t bytes)
 {
-    if(!_buf && !unpack())
-        return 0;
-
-    char *startptr = _buf + _pos;
-    char *endptr = _buf + size();
-    bytes = std::min<size_t>(endptr - startptr, bytes); // limit in case reading over buffer size
-    memcpy(dst, startptr, bytes); //  binary copy
+    File *file = _archiveHandle->archiveFile.content();
+    file->seek(_archiveHandle->dataOffsets.at(_fileIdx), SEEK_SET);
+    file->read(dst, bytes);
     _pos += bytes;
     return bytes;
 }
@@ -125,11 +121,10 @@ size_t Dat2File::write(const void *src, size_t bytes)
 
 vfspos Dat2File::size()
 {
-    if(_buf && _bufSize)
-        return _bufSize;
-
     if(!_archiveHandle->openRead())
         return npos;
+
+    return _archiveHandle->fileSizes.at(_fileIdx);
 /*
     // FIXME: this is not 100% safe. The file index may change if the zip file is changed externally while closed
     mz_zip_archive_file_stat zstat;
@@ -143,6 +138,8 @@ vfspos Dat2File::size()
 
 bool Dat2File::unpack()
 {
+    return true;
+    /*
     close(); // delete the buffer
 
     const vfspos sz = size(); // will reopen the file
@@ -152,7 +149,7 @@ bool Dat2File::unpack()
     _buf = new char[size_t(sz) + 1];
     if(!_buf)
         return false;
-/*
+
     if(!mz_zip_reader_extract_to_mem(MZ, _fileIdx, _buf, (size_t)sz, 0))
     {
         delete [] _buf;
@@ -169,8 +166,9 @@ bool Dat2File::unpack()
     {
         _bufSize = (vfspos)strnNLcpy(_buf, _buf);
     }
-*/
+
     return true;
+    */
 }
 
 
