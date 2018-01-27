@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     vfs.AddArchive("master.dat");
     vfs.Mount("master.dat", "");
 
-    std::string filename = "text\\english\\cuts\\artimer1.txt";
+    std::string filename = "text\\english\\cuts\\narrate.txt";
 
     ttvfs::File *vf = vfs.GetFile(filename.c_str());
     if (!vf) {
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
     puts(buf);
 
-    vf->seek(6, SEEK_SET);
+    vf->seek(2, SEEK_SET);
     char b[6];
     vf->read(b, 3);
     b[5] = 0;

@@ -36,6 +36,7 @@ public:
     unsigned int getUnpackedSize();
 
 protected:
+    unsigned char *_uncompressedData;
     vfspos _pos;
     CountedPtr<Dat2ArchiveRef> _archiveHandle;
 
