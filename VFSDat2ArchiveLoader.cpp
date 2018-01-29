@@ -1,4 +1,4 @@
-#include <ttvfs/VFSInternal.h>
+#include <VFSInternal.h>
 #include "VFSDat2ArchiveLoader.h"
 #include "VFSDat2Dir.h"
 #include "VFSDat2ArchiveRef.h"

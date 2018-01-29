@@ -1,7 +1,7 @@
 #include "VFSDat2File.h"
-#include <ttvfs/VFSInternal.h>
-#include <ttvfs/VFSTools.h>
-#include <ttvfs/VFSDir.h>
+#include <VFSInternal.h>
+#include <VFSTools.h>
+#include <VFSDir.h>
 #include <stdio.h>
 #include "miniz.h"
 #include <iostream>

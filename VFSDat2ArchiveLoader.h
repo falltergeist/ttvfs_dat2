@@ -1,7 +1,7 @@
 #ifndef VFS_DAT2_ARCHIVE_LOADER_H
 #define VFS_DAT2
 
-#include <ttvfs/VFSArchiveLoader.h>
+#include <VFSArchiveLoader.h>
 
 VFS_NAMESPACE_START
 

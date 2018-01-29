@@ -1,8 +1,8 @@
 #include "VFSDat2File.h"
 #include "VFSDat2Dir.h"
-#include <ttvfs/VFSTools.h>
-#include <ttvfs/VFSInternal.h>
-#include <ttvfs/VFSFile.h>
+#include <VFSTools.h>
+#include <VFSInternal.h>
+#include <VFSFile.h>
 
 #include <iostream>
 

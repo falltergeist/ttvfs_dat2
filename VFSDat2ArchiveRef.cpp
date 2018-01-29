@@ -1,4 +1,4 @@
-#include <ttvfs/VFSInternal.h>
+#include <VFSInternal.h>
 #include "VFSDat2ArchiveRef.h"
 #include <stdio.h>
 //#include "miniz.h"
