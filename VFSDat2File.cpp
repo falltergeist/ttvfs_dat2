@@ -3,7 +3,8 @@
 #include <ttvfs/VFSTools.h>
 #include <ttvfs/VFSDir.h>
 #include <stdio.h>
-#include "zlib.h"
+#include "miniz.h"
+#include <iostream>
 
 VFS_NAMESPACE_START
 
@@ -19,6 +20,7 @@ Dat2File::Dat2File(const char *name, Dat2ArchiveRef *zref)
 Dat2File::~Dat2File()
 {
     close();
+    delete [] _uncompressedData;
 }
 
 bool Dat2File::open(const char *mode /* = NULL */)
@@ -30,21 +32,21 @@ bool Dat2File::open(const char *mode /* = NULL */)
         file->seek(getDataOffset(), SEEK_SET);
         file->read(compressedData, getPackedSize());
 
-        _uncompressedData = new unsigned char[getUnpackedSize()];
+        _uncompressedData = new unsigned char[getUnpackedSize()]{0};
 
         // unpacking
-        z_stream zStream;
+        mz_stream zStream;
         zStream.total_in  = zStream.avail_in  = getPackedSize();
         zStream.avail_in = getPackedSize();
         zStream.next_in  = compressedData;
         zStream.total_out = zStream.avail_out = getUnpackedSize();
         zStream.next_out = _uncompressedData;
-        zStream.zalloc = Z_NULL;
-        zStream.zfree = Z_NULL;
-        zStream.opaque = Z_NULL;
-        inflateInit( &zStream );
-        inflate( &zStream, Z_FINISH );
-        inflateEnd( &zStream );
+        zStream.zalloc = 0;
+        zStream.zfree = 0;
+        zStream.opaque = 0;
+        mz_inflateInit(&zStream );
+        mz_inflate(&zStream, MZ_FINISH);
+        mz_inflateEnd(&zStream );
     }
 
     return true; // does not have to be opened
@@ -62,10 +64,6 @@ bool Dat2File::iseof() const
 
 void Dat2File::close()
 {
-  if (_uncompressedData) {
-    delete [] _uncompressedData;
-  }
-
 }
 
 bool Dat2File::seek(vfspos pos, int whence)
