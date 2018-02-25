@@ -1,8 +1,5 @@
-#include <VFSInternal.h>
-#include "VFSDat2ArchiveRef.h"
+#include "Dat2ArchiveRef.h"
 #include <stdio.h>
-//#include "miniz.h"
-
 #include <iostream>
 
 VFS_NAMESPACE_START

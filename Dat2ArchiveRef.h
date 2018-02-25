@@ -1,7 +1,7 @@
 #ifndef VFS_DAT2_ARCHIVE_REF
 #define VFS_DAT2_ARCHIVE_REF
 
-#include <VFSFile.h>
+#include <ttvfs.h>
 #include <vector>
 
 VFS_NAMESPACE_START

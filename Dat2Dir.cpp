@@ -1,9 +1,5 @@
-#include "VFSDat2File.h"
-#include "VFSDat2Dir.h"
-#include <VFSTools.h>
-#include <VFSInternal.h>
-#include <VFSFile.h>
-
+#include "Dat2File.h"
+#include "Dat2Dir.h"
 #include <cstdio>
 #include <iostream>
 

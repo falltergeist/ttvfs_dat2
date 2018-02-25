@@ -1,8 +1,8 @@
 #ifndef VFS_DAT2_DIR_H
 #define VFS_DAT2_DIR_H
 
-#include <VFSDir.h>
-#include "VFSDat2ArchiveRef.h"
+#include <ttvfs.h>
+#include "Dat2ArchiveRef.h"
 
 VFS_NAMESPACE_START
 

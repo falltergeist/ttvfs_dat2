@@ -1,13 +1,12 @@
-#include <VFSInternal.h>
-#include "VFSDat2ArchiveLoader.h"
-#include "VFSDat2Dir.h"
-#include "VFSDat2ArchiveRef.h"
+#include "Dat2ArchiveLoader.h"
+#include "Dat2Dir.h"
+#include "Dat2ArchiveRef.h"
 
 #include <iostream>
 
 VFS_NAMESPACE_START
 
-Dir *VFSDat2ArchiveLoader::Load(File *arch, VFSLoader ** /*unused*/, void * /*unused*/)
+Dir *Dat2ArchiveLoader::Load(File *arch, VFSLoader ** /*unused*/, void * /*unused*/)
 {
     CountedPtr<Dat2ArchiveRef> ref = new Dat2ArchiveRef(arch);
     if(!ref->init() || !ref->openRead())

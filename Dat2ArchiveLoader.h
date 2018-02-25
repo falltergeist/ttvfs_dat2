@@ -1,14 +1,14 @@
 #ifndef VFS_DAT2_ARCHIVE_LOADER_H
 #define VFS_DAT2
 
-#include <VFSArchiveLoader.h>
+#include <ttvfs.h>
 
 VFS_NAMESPACE_START
 
-class VFSDat2ArchiveLoader : public VFSArchiveLoader
+class Dat2ArchiveLoader : public VFSArchiveLoader
 {
 public:
-    virtual ~VFSDat2ArchiveLoader() {}
+    virtual ~Dat2ArchiveLoader() {}
     virtual Dir *Load(File *arch, VFSLoader **ldr, void *opaque = NULL);
 };
 
