@@ -4,6 +4,7 @@
 #include <VFSInternal.h>
 #include <VFSFile.h>
 
+#include <cstdio>
 #include <iostream>
 
 VFS_NAMESPACE_START
