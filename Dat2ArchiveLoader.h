@@ -2,6 +2,7 @@
 #define VFS_DAT2
 
 #include <ttvfs.h>
+#include <VFSArchiveLoader.h>
 
 VFS_NAMESPACE_START
 
